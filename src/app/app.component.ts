@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { catchError, concatMap, delay, map, Observable, of, switchMap } from 'rxjs';
+import { catchError, concatMap, delay, Observable, of } from 'rxjs';
 import { MuseumService } from './services/museum.service';
 
 @Component({

@@ -6,6 +6,7 @@ export class Timer {
     update = new Subject<number>();
     private timer!: Observable<number | null>;
     private subscription!: any; 
+
     constructor(step: number) {
       this.timeElapsed = 0;
       this.step = step;
