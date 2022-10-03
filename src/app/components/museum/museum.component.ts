@@ -15,14 +15,17 @@ import { ArtDialogComponent } from '../dialog/art-dialog/art-dialog.component';
 export class MuseumComponent implements OnInit {
   
   objectIds: number[] = [];
-  isLoading = false;
+  isLoading!: boolean;
+  itemIsLoading!: boolean;
   artObject!: any;
   counter: number = 0;
   timer: any;
+  artWorkLoaded!: boolean;
   
   constructor(private readonly museumService: MuseumService, public dialog: MatDialog) { }
 
   public ngOnInit() {
+    this.artWorkLoaded = false;
     this.museumService.GetObjectsIds()
     .pipe(
       map((response: ObjectIdsResponse) => response.objectIDs.filter(id => id <= 1000)),
@@ -35,8 +38,10 @@ export class MuseumComponent implements OnInit {
       this.timer.start();
       this.timer.update.subscribe((timeElapsed: number) => {
       if (timeElapsed % 10000 === 0) {
+          this.itemIsLoading = true;
           const objectId = this.objectIds[this.counter];
           this.setArtObject(objectId);  
+          this.artWorkLoaded = true;
         }
       });   
     });
@@ -59,6 +64,7 @@ export class MuseumComponent implements OnInit {
         this.artObject = response;
         this.counter++;
         this.isLoading = false;
+        this.itemIsLoading = false;
     });
   }  
   

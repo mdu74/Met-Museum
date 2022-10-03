@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
+import { GlobalComponent } from '../global-constant/global-constant';
 import { DepartmentResponse } from '../interface/departmentResponse';
 import { ObjectIdsResponse } from '../interface/objectIdsResponse';
 import { ObjectResponse } from '../interface/objectResponse';
@@ -15,7 +16,7 @@ export class MuseumService {
 
   public GetObjectsIds(): Observable<ObjectIdsResponse>{
     if(!this.objectIds$){
-      this.objectIds$ = this.http.get<ObjectIdsResponse>('https://collectionapi.metmuseum.org/public/collection/v1/objects')
+      this.objectIds$ = this.http.get<ObjectIdsResponse>(`${GlobalComponent.apiUrl}/objects`)
       .pipe(
         shareReplay({ bufferSize: 1, refCount: true })
       ) as Observable<ObjectIdsResponse>;
@@ -25,10 +26,10 @@ export class MuseumService {
   }
 
   public GetDepartments(): Observable<DepartmentResponse>{
-    return this.http.get<DepartmentResponse>('https://collectionapi.metmuseum.org/public/collection/v1/departments');
+    return this.http.get<DepartmentResponse>(`${GlobalComponent.apiUrl}/departments`);
   }
 
   public GetObjectsBy(id: number): Observable<ObjectResponse>{
-    return this.http.get<ObjectResponse>(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`);
+    return this.http.get<ObjectResponse>(`${GlobalComponent.apiUrl}/objects/${id}`);
   }
 }

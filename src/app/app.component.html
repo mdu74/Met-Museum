@@ -1,8 +1,21 @@
 
 <div *ngIf="isLoading; else showContent">
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <div class="row">
+        <div class="col h-100 d-flex align-items-center justify-content-center">
+          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col h-100 d-flex align-items-center justify-content-center">
+          <h1>Welcome to the Met Museum App</h1>
+        </div>
+    </div>
 </div>
 <ng-template #showContent>
-    <button routerLink="/museum" mat-button>View Gallery</button>
+    <div class="row">
+        <div class="col h-100 d-flex align-items-center justify-content-center">
+            <button routerLink="/museum" mat-button>Please Click To View Gallery</button>
+        </div>
+    </div>    
 </ng-template>
 <router-outlet></router-outlet>

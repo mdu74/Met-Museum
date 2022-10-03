@@ -42,6 +42,9 @@
         <mat-card-actions>
           <button (click)="openDialog(artObject)" mat-button>Details</button>
         </mat-card-actions>
+        <mat-card-footer>
+          <mat-progress-bar *ngIf="itemIsLoading" mode="indeterminate"></mat-progress-bar>
+        </mat-card-footer>
       </mat-card>
     </div>
   </ng-template>
