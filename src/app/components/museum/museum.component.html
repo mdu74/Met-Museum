@@ -1,5 +1,14 @@
 <div *ngIf="isLoading; else showContent">
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <div class="row">
+    <div class="col h-100 d-flex align-items-center justify-content-center">
+      <p>Loading Art Item</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col h-100 d-flex align-items-center justify-content-center">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </div>
+  </div>  
 </div>
   <ng-template #showContent>
     <div class="h-100 d-flex align-items-center justify-content-center">
@@ -14,7 +23,6 @@
                     No Name To Display
                 </ng-template>
             </mat-card-title>
-          <!-- <mat-card-subtitle>{{ artObject.artistDisplayBio }}</mat-card-subtitle> -->
         </mat-card-header>
         <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg">
         <mat-card-content>

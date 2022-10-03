@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { catchError, map, Observable, of } from 'rxjs';
 import { ArtObject } from 'src/app/interface/artObject';
+import { ObjectIdsResponse } from 'src/app/interface/objectIdsResponse';
+import { Timer } from 'src/app/models/timer';
 import { MuseumService } from 'src/app/services/museum.service';
 import { ArtDialogComponent } from '../dialog/art-dialog/art-dialog.component';
 
@@ -11,45 +13,52 @@ import { ArtDialogComponent } from '../dialog/art-dialog/art-dialog.component';
   styleUrls: ['./museum.component.css']
 })
 export class MuseumComponent implements OnInit {
+  
   objectIds: number[] = [];
-  delay: number = 10000;
   isLoading = false;
   artObject!: any;
-  paused = false;
-
+  counter: number = 0;
+  timer: any;
+  
   constructor(private readonly museumService: MuseumService, public dialog: MatDialog) { }
 
-  async ngOnInit(): Promise<void> {
+  public ngOnInit() {
     this.museumService.GetObjectsIds()
-      .pipe(
-        map(response => response.objectIDs.filter(id => id < 1000)),
-        catchError(this.handleError<any[]>('get objects ', []))
-      ).subscribe(response => {
-        this.objectIds = response;
-      });      
-      
-    for (let i = 0; i < this.objectIds.length; i++) { 
-      await this.reloadArtObject(this.objectIds[i], i);
-    }
+    .pipe(
+      map((response: ObjectIdsResponse) => response.objectIDs.filter(id => id <= 1000)),
+      catchError(this.handleError<any[]>('get objects ', [])),
+    ).subscribe((response: number[]) => {
+      this.isLoading = true;
+      this.objectIds = response;
+      this.counter = 0;
+      this.timer = new Timer(50);
+      this.timer.start();
+      this.timer.update.subscribe((timeElapsed: number) => {
+      if (timeElapsed % 10000 === 0) {
+          const objectId = this.objectIds[this.counter];
+          this.setArtObject(objectId);  
+        }
+      });   
+    });
   }
 
   public openDialog(artObject: ArtObject): void {
+    this.timer.pause();
     const dialogRef = this.dialog.open(ArtDialogComponent, { data: artObject });
 
-    dialogRef.afterClosed();
+    dialogRef.afterClosed().subscribe(res => {
+      this.timer.start();
+    });
   }
 
-  private async reloadArtObject(id: number, iteration: number): Promise<void> {
-    setTimeout(async (): Promise<void> => {
-      this.setArtObject(id);     
-    }, this.delay * iteration);
-  };
-
-  private setArtObject(id: number): void {  
-    this.isLoading = true;  
-    this.museumService.GetObjectsBy(id).subscribe(response => {
-      this.artObject = response;
-      this.isLoading = false;
+  private setArtObject(id: number): void { 
+    this.museumService.GetObjectsBy(id)
+      .pipe(
+        catchError(this.handleError<any>('get objects ids ', []))
+      ).subscribe(response => {
+        this.artObject = response;
+        this.counter++;
+        this.isLoading = false;
     });
   }  
   
